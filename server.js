@@ -5,7 +5,7 @@ const app = express();
 const server = app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running...');
 });
-const io = socket(app);
+const io = socket(server);
 io.on('connect', (socket) => {
 
 })
