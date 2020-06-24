@@ -1,7 +1,11 @@
 const express = require('express');
 const socket = require('socket.io')
 const app = express();
-let tasks = ['Test task 1', 'Test task 2', 'Test task 3', 'Test task 4'];
+const tasks = [
+  {id: 'adsadasdsaw34325', name: 'Test task 1'},
+  {id: 'a34253r2', name: 'Test task 2'},
+  {id: 'adsadas325', name: 'Test task 3'},
+];
 
 const server = app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running...');
@@ -15,9 +19,15 @@ io.on('connection', (socket) => {
       socket.broadcast.emit('addTask', task);
     }
   });
-  socket.on('removeTask', ({index})=>{
-    tasks.splice(index, 1);
-    socket.broadcast.emit('updateData', tasks);
+  socket.on('removeTask', ({id})=>{
+    tasks.some((task, taskIndex, taskArray) => {
+      if(task.id === id) {
+        taskArray.splice(taskIndex, 1);
+        socket.broadcast.emit('removeTask', id);
+        return true;
+      }
+      return false;
+    })
   });
 });
 app.use((req, res) => {
